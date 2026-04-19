@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Malaysia Mortgage Calculator 2025 | Free Home Loan Calculator</title>
+    <meta name="description" content="Free Malaysia mortgage calculator. Calculate your monthly home loan repayments for Maybank, CIMB, Public Bank and more. Updated 2025 rates.">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .gradient-bg { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        .card-shadow { box-shadow: 0 10px 40px rgba(0,0,0,0.1); }
+        .input-focus:focus { border-color: #667eea; box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1); }
+    </style>
+    <!-- Google AdSense Placeholder -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <!-- Header -->
+    <header class="gradient-bg text-white py-8">
+        <div class="container mx-auto px-4 text-center">
+            <h1 class="text-3xl md:text-4xl font-bold mb-2">🏠 Malaysia Mortgage Calculator</h1>
+            <p class="text-white/90 text-lg">Calculate your monthly home loan repayments instantly</p>
+            <p class="text-white/70 text-sm mt-2">Updated with 2025 interest rates | Maybank, CIMB, Public Bank & more</p>
+        </div>
+    </header>
+
+    <!-- AdSense Top Banner -->
+    <div class="container mx-auto px-4 mt-6">
+        <div class="bg-gray-200 h-24 rounded-lg flex items-center justify-center text-gray-500 text-sm">
+            <!-- Replace with your AdSense code -->
+            <ins class="adsbygoogle"
+                 style="display:block"
+                 data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+                 data-ad-slot="XXXXXXXXXX"
+                 data-ad-format="auto"
+                 data-full-width-responsive="true"></ins>
+            <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+        </div>
+    </div>
+
+    <!-- Main Calculator -->
+    <div class="container mx-auto px-4 py-8">
+        <div class="max-w-6xl mx-auto grid md:grid-cols-2 gap-8">
+            
+            <!-- Input Section -->
+            <div class="bg-white rounded-2xl card-shadow p-6 md:p-8">
+                <h2 class="text-xl font-semibold mb-6 text-gray-800">📊 Loan Details</h2>
+                
+                <div class="space-y-5">
+                    <!-- Property Price -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Property Price (RM)</label>
+                        <input type="number" id="propertyPrice" value="500000" 
+                               class="w-full px-4 py-3 border border-gray-300 rounded-xl input-focus outline-none transition-all text-lg"
+                               placeholder="e.g., 500000">
+                    </div>
+
+                    <!-- Down Payment -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Down Payment (%)</label>
+                        <div class="flex gap-3">
+                            <input type="number" id="downPaymentPercent" value="10" 
+                                   class="w-24 px-4 py-3 border border-gray-300 rounded-xl input-focus outline-none transition-all"
+                                   onchange="calculateDownPayment()">
+                            <input type="number" id="downPaymentAmount" 
+                                   class="flex-1 px-4 py-3 border border-gray-300 rounded-xl input-focus outline-none transition-all bg-gray-50"
+                                   readonly placeholder="Calculated amount">
+                        </div>
+                        <p class="text-xs text-gray-500 mt-1">Standard: 10% for first property, 30% for subsequent</p>
+                    </div>
+
+                    <!-- Loan Amount -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Loan Amount (RM)</label>
+                        <input type="number" id="loanAmount" value="450000" 
+                               class="w-full px-4 py-3 border border-gray-300 rounded-xl input-focus outline-none transition-all text-lg font-semibold bg-blue-50"
+                               readonly>
+                    </div>
+
+                    <!-- Interest Rate -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Interest Rate (%)</label>
+                        <select id="interestRate" onchange="updateRate()" 
+                                class="w-full px-4 py-3 border border-gray-300 rounded-xl input-focus outline-none transition-all">
+                            <option value="4.25">Maybank - 4.25%</option>
+                            <option value="4.35">CIMB - 4.35%</option>
+                            <option value="4.20">Public Bank - 4.20%</option>
+                            <option value="4.30">Hong Leong Bank - 4.30%</option>
+                            <option value="4.40">RHB Bank - 4.40%</option>
+                            <option value="4.50">Ambank - 4.50%</option>
+                            <option value="custom">Custom Rate</option>
+                        </select>
+                        <input type="number" id="customRate" step="0.01" value="4.25" 
+                               class="w-full mt-2 px-4 py-3 border border-gray-300 rounded-xl input-focus outline-none transition-all"
+                               onchange="calculate()">
+                    </div>
+
+                    <!-- Loan Tenure -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Loan Tenure (Years)</label>
+                        <input type="range" id="loanTenure" min="5" max="35" value="30" 
+                               class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+                               oninput="updateTenureLabel(); calculate()">
+                        <div class="flex justify-between text-xs text-gray-500 mt-1">
+                            <span>5 years</span>
+                            <span id="tenureLabel" class="font-semibold text-blue-600">30 years</span>
+                            <span>35 years</span>
+                        </div>
+                    </div>
+
+                    <!-- Calculate Button -->
+                    <button onclick="calculate()" 
+                            class="w-full gradient-bg text-white font-semibold py-4 rounded-xl hover:opacity-90 transition-all transform hover:scale-[1.02]">
+                        🚀 Calculate Now
+                    </button>
+                </div>
+            </div>
+
+            <!-- Results Section -->
+            <div class="space-y-6">
+                <!-- Summary Cards -->
+                <div class="bg-white rounded-2xl card-shadow p-6 md:p-8">
+                    <h2 class="text-xl font-semibold mb-6 text-gray-800">💰 Monthly Repayment</h2>
+                    
+                    <div class="text-center mb-6">
+                        <p class="text-gray-500 text-sm mb-1">Your Estimated Monthly Payment</p>
+                        <p class="text-5xl font-bold gradient-bg bg-clip-text text-transparent" id="monthlyPayment">
+                            RM 2,213
+                        </p>
+                        <p class="text-gray-400 text-sm mt-2">per month</p>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="bg-blue-50 p-4 rounded-xl">
+                            <p class="text-gray-500 text-xs mb-1">Total Interest</p>
+                            <p class="text-lg font-semibold text-gray-800" id="totalInterest">RM 346,680</p>
+                        </div>
+                        <div class="bg-green-50 p-4 rounded-xl">
+                            <p class="text-gray-500 text-xs mb-1">Total Payment</p>
+                            <p class="text-lg font-semibold text-gray-800" id="totalPayment">RM 796,680</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Chart -->
+                <div class="bg-white rounded-2xl card-shadow p-6 md:p-8">
+                    <h3 class="text-lg font-semibold mb-4 text-gray-800">📈 Payment Breakdown</h3>
+                    <canvas id="paymentChart" width="300" height="200"></canvas>
+                </div>
+
+                <!-- Affordability Check -->
+                <div class="bg-white rounded-2xl card-shadow p-6">
+                    <h3 class="text-lg font-semibold mb-4 text-gray-800">✅ Affordability Check</h3>
+                    <div class="space-y-3">
+                        <div>
+                            <label class="text-sm text-gray-600">Your Monthly Income (RM)</label>
+                            <input type="number" id="monthlyIncome" value="8000" 
+                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg mt-1"
+                                   onchange="checkAffordability()">
+                        </div>
+                        <div class="p-3 rounded-lg" id="affordabilityResult">
+                            <p class="text-sm" id="affordabilityText">DSR: 27.7% - ✅ Healthy</p>
+                        </div>
+                        <p class="text-xs text-gray-500">Bank typically approves loans with DSR below 60-70%</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- AdSense Middle -->
+        <div class="mt-8 bg-gray-200 h-24 rounded-lg flex items-center justify-center text-gray-500 text-sm">
+            <!-- AdSense Code Here -->
+            Advertisement Space
+        </div>
+
+        <!-- Bank Comparison Table -->
+        <div class="mt-8 bg-white rounded-2xl card-shadow p-6 md:p-8">
+            <h2 class="text-xl font-semibold mb-6 text-gray-800">🏦 Bank Interest Rates Comparison (2025)</h2>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-4 py-3 text-sm font-medium text-gray-700">Bank</th>
+                            <th class="px-4 py-3 text-sm font-medium text-gray-700">Interest Rate</th>
+                            <th class="px-4 py-3 text-sm font-medium text-gray-700">Monthly Payment*</th>
+                            <th class="px-4 py-3 text-sm font-medium text-gray-700">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-100" id="bankTable">
+                        <!-- Populated by JS -->
+                    </tbody>
+                </table>
+                <p class="text-xs text-gray-500 mt-3">*Based on RM450,000 loan over 30 years. Rates subject to change.</p>
+            </div>
+        </div>
+
+        <!-- FAQ Section -->
+        <div class="mt-8 bg-white rounded-2xl card-shadow p-6 md:p-8">
+            <h2 class="text-xl font-semibold mb-6 text-gray-800">❓ Frequently Asked Questions</h2>
+            <div class="space-y-4">
+                <details class="group">
+                    <summary class="flex justify-between items-center cursor-pointer py-3 border-b border-gray-100">
+                        <span class="font-medium text-gray-700">What is the minimum down payment in Malaysia?</span>
+                        <span class="text-gray-400 group-open:rotate-180 transition-transform">▼</span>
+                    </summary>
+                    <p class="py-3 text-gray-600 text-sm">
+                        For first-time homebuyers, the minimum down payment is 10%. For second and subsequent properties, 
+                        it increases to 30% (or higher depending on Bank Negara Malaysia regulations).
+                    </p>
+                </details>
+                <details class="group">
+                    <summary class="flex justify-between items-center cursor-pointer py-3 border-b border-gray-100">
+                        <span class="font-medium text-gray-700">How is DSR (Debt Service Ratio) calculated?</span>
+                        <span class="text-gray-400 group-open:rotate-180 transition-transform">▼</span>
+                    </summary>
+                    <p class="py-3 text-gray-600 text-sm">
+                        DSR = (Total Monthly Debt Commitments / Gross Monthly Income) × 100%. 
+                        Banks typically approve loans with DSR below 60-70%, depending on your income level.
+                    </p>
+                </details>
+                <details class="group">
+                    <summary class="flex justify-between items-center cursor-pointer py-3 border-b border-gray-100">
+                        <span class="font-medium text-gray-700">What documents are needed for a home loan?</span>
+                        <span class="text-gray-400 group-open:rotate-180 transition-transform">▼</span>
+                    </summary>
+                    <p class="py-3 text-gray-600 text-sm">
+                        IC/Passport, 3-6 months payslips, EPF statements, bank statements, 
+                        employment confirmation letter, and property booking receipt.
+                    </p>
+                </details>
+            </div>
+        </div>
+
+        <!-- Affiliate Links Section -->
+        <div class="mt-8 grid md:grid-cols-3 gap-4">
+            <a href="#" class="bg-gradient-to-r from-yellow-400 to-yellow-500 text-white p-4 rounded-xl text-center hover:shadow-lg transition-all">
+                <p class="font-semibold">🏦 Compare Home Loans</p>
+                <p class="text-sm opacity-90">Get the best rate</p>
+            </a>
+            <a href="#" class="bg-gradient-to-r from-blue-500 to-blue-600 text-white p-4 rounded-xl text-center hover:shadow-lg transition-all">
+                <p class="font-semibold">📋 Check Eligibility</p>
+                <p class="text-sm opacity-90">Free DSR check</p>
+            </a>
+            <a href="#" class="bg-gradient-to-r from-green-500 to-green-600 text-white p-4 rounded-xl text-center hover:shadow-lg transition-all">
+                <p class="font-semibold">💬 Talk to an Expert</p>
+                <p class="text-sm opacity-90">Free consultation</p>
+            </a>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-8 mt-12">
+        <div class="container mx-auto px-4 text-center">
+            <p class="text-gray-400 text-sm">
+                © 2025 Malaysia Mortgage Calculator. For reference only. 
+                Actual loan terms may vary. Please consult banks for official rates.
+            </p>
+            <div class="mt-4 space-x-4 text-sm">
+                <a href="#" class="text-gray-400 hover:text-white">Privacy Policy</a>
+                <a href="#" class="text-gray-400 hover:text-white">Terms of Use</a>
+                <a href="#" class="text-gray-400 hover:text-white">Contact</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        let chart;
+
+        function calculateDownPayment() {
+            const price = parseFloat(document.getElementById('propertyPrice').value) || 0;
+            const percent = parseFloat(document.getElementById('downPaymentPercent').value) || 0;
+            const downPayment = price * (percent / 100);
+            document.getElementById('downPaymentAmount').value = Math.round(downPayment).toLocaleString();
+            document.getElementById('loanAmount').value = Math.round(price - downPayment).toLocaleString();
+            calculate();
+        }
+
+        function updateRate() {
+            const select = document.getElementById('interestRate');
+            const customInput = document.getElementById('customRate');
+            if (select.value === 'custom') {
+                customInput.style.display = 'block';
+            } else {
+                customInput.style.display = 'block';
+                customInput.value = select.value;
+            }
+            calculate();
+        }
+
+        function updateTenureLabel() {
+            document.getElementById('tenureLabel').textContent = document.getElementById('loanTenure').value + ' years';
+        }
+
+        function calculate() {
+            const price = parseFloat(document.getElementById('propertyPrice').value) || 0;
+            const downPaymentPercent = parseFloat(document.getElementById('downPaymentPercent').value) || 0;
+            const downPayment = price * (downPaymentPercent / 100);
+            const loanAmount = price - downPayment;
+            
+            document.getElementById('downPaymentAmount').value = Math.round(downPayment).toLocaleString();
+            document.getElementById('loanAmount').value = Math.round(loanAmount).toLocaleString();
+
+            const rate = parseFloat(document.getElementById('customRate').value) || 4.25;
+            const years = parseInt(document.getElementById('loanTenure').value) || 30;
+            const months = years * 12;
+            const monthlyRate = rate / 100 / 12;
+
+            const monthlyPayment = loanAmount * 
+                (monthlyRate * Math.pow(1 + monthlyRate, months)) / 
+                (Math.pow(1 + monthlyRate, months) - 1);
+
+            const totalPayment = monthlyPayment * months;
+            const totalInterest = totalPayment - loanAmount;
+
+            document.getElementById('monthlyPayment').textContent = 'RM ' + monthlyPayment.toLocaleString('en-MY', {maximumFractionDigits: 0});
+            document.getElementById('totalInterest').textContent = 'RM ' + Math.round(totalInterest).toLocaleString();
+            document.getElementById('totalPayment').textContent = 'RM ' + Math.round(totalPayment).toLocaleString();
+
+            updateChart(loanAmount, totalInterest);
+            updateBankTable(loanAmount, years);
+            checkAffordability();
+        }
+
+        function updateChart(principal, interest) {
+            const ctx = document.getElementById('paymentChart').getContext('2d');
+            
+            if (chart) chart.destroy();
+            
+            chart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Principal', 'Interest'],
+                    datasets: [{
+                        data: [principal, interest],
+                        backgroundColor: ['#667eea', '#f56565'],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+        }
+
+        function updateBankTable(loanAmount, years) {
+            const banks = [
+                { name: 'Maybank', rate: 4.25 },
+                { name: 'Public Bank', rate: 4.20 },
+                { name: 'CIMB', rate: 4.35 },
+                { name: 'Hong Leong', rate: 4.30 },
+                { name: 'RHB', rate: 4.40 },
+                { name: 'Ambank', rate: 4.50 }
+            ];
+
+            const months = years * 12;
+            let html = '';
+            
+            banks.forEach(bank => {
+                const monthlyRate = bank.rate / 100 / 12;
+                const payment = loanAmount * 
+                    (monthlyRate * Math.pow(1 + monthlyRate, months)) / 
+                    (Math.pow(1 + monthlyRate, months) - 1);
+                
+                html += `
+                    <tr class="hover:bg-gray-50">
+                        <td class="px-4 py-3 font-medium">${bank.name}</td>
+                        <td class="px-4 py-3">${bank.rate}%</td>
+                        <td class="px-4 py-3 font-semibold text-blue-600">RM ${Math.round(payment).toLocaleString()}</td>
+                        <td class="px-4 py-3">
+                            <a href="#" class="text-blue-600 hover:underline text-sm">Apply Now →</a>
+                        </td>
+                    </tr>
+                `;
+            });
+            
+            document.getElementById('bankTable').innerHTML = html;
+        }
+
+        function checkAffordability() {
+            const income = parseFloat(document.getElementById('monthlyIncome').value) || 0;
+            const monthlyPaymentText = document.getElementById('monthlyPayment').textContent.replace(/[^0-9]/g, '');
+            const monthlyPayment = parseFloat(monthlyPaymentText) || 0;
+            
+            if (income > 0) {
+                const dsr = (monthlyPayment / income) * 100;
+                const resultDiv = document.getElementById('affordabilityResult');
+                const textEl = document.getElementById('affordabilityText');
+                
+                if (dsr < 30) {
+                    resultDiv.className = 'p-3 rounded-lg bg-green-100';
+                    textEl.textContent = `DSR: ${dsr.toFixed(1)}% - ✅ Healthy`;
+                } else if (dsr < 60) {
+                    resultDiv.className = 'p-3 rounded-lg bg-yellow-100';
+                    textEl.textContent = `DSR: ${dsr.toFixed(1)}% - ⚠️ Moderate`;
+                } else {
+                    resultDiv.className = 'p-3 rounded-lg bg-red-100';
+                    textEl.textContent = `DSR: ${dsr.toFixed(1)}% - ❌ High Risk`;
+                }
+            }
+        }
+
+        // Initialize
+        window.onload = function() {
+            calculate();
+        };
+    </script>
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js/v8c78df7c7c0f484497ecbca7046644da1771523124516" integrity="sha512-8DS7rgIrAmghBFwoOTujcf6D9rXvH8xm8JQ1Ja01h9QX8EzXldiszufYa4IFfKdLUKTTrnSFXLDkUEOTrZQ8Qg==" data-cf-beacon='{"version":"2024.11.0","token":"4655f3c58dd6497fb7ddb85b68480db7","server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
+</body>
+</html>
